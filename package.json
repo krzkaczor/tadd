@@ -20,7 +20,7 @@
   },
   "repository": "krzkaczor/tadd",
   "scripts": {
-    "build": "tsc"
+    "build": "rm -rf ./dist && tsc && chmod +x ./dist/cli.js"
   },
   "bin": "./dist/cli.js"
 }

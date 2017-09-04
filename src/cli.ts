@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { parseArgs } from "./parseArgs";
 import { green, blue } from "chalk";
 import { join } from "path";
