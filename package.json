@@ -1,0 +1,25 @@
+{
+  "name": "tadd",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "command-line-args": "^4.0.7",
+    "invariant": "^2.2.2",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/command-line-args": "^4.0.1",
+    "@types/invariant": "^2.2.29",
+    "@types/lodash": "^4.14.74",
+    "@types/node": "^8.0.26",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.2"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "bin": "./dist/cli.js"
+}
