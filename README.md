@@ -2,6 +2,14 @@
 
 Installs package and automatically finds Typescript typings.
 
+```
+npm install --global tadd
+```
+or 
+```
+yarn global add tadd
+```
+
 ## Usage
 
 ```
