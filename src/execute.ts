@@ -1,10 +1,12 @@
-import { execSync } from "child_process";
+import { exec } from "child_process";
 import { red } from "chalk";
+import * as Bluebird from 'bluebird';
 
-export function execute(cmd: string): string {
+const promisedExec = Bluebird.promisify(exec);
+
+export async function execute(cmd: string): Promise<string> {
   try {
-    console.log(`-- ${cmd}`);
-    const result = execSync(cmd).toString();
+    const result = (await promisedExec(cmd)).toString();
     return result;
   } catch (e) {
     console.error(red("Command failed with:"));

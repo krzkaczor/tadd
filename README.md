@@ -21,3 +21,8 @@ Currently uses yarn to install deps.
  - support npm
  - npm search when no `@types` typings available
  - cooler CLI
+
+## Development
+```
+ts-node ./src/cli.ts [package-name]
+```

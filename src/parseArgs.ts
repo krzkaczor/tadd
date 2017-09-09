@@ -13,7 +13,6 @@ export function parseArgs(): IOptions {
   ];
 
   const rawOptions = commandLineArgs(optionDefinitions);
-  console.log(rawOptions);
 
   invariant(
     rawOptions["packages"] && rawOptions["packages"].length > 0,

@@ -3,7 +3,7 @@
       "noImplicitAny": true,
       "strictNullChecks": true,
       "sourceMap": false,
-      "target": "es5",
+      "target": "es6",
       "outDir": "./dist"
   },
   "include": [
