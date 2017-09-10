@@ -7,15 +7,18 @@
     "tslint-config-prettier"
   ],
   "rules": {
-    "prettier": [true, {
-      "printWidth": 100,
-      "trailingComma": "es5"
-    }],
+    "prettier": [
+      true,
+      {
+        "printWidth": 100,
+        "trailingComma": "es5"
+      }
+    ],
     "interface-name": [true, "always-prefix"],
     "variable-name": false,
     "object-literal-sort-keys": false,
     "no-unused-variable": [true, { "ignore-pattern": "^_$" }],
-    "await-promise": true,
-    "no-floating-promises": true    
+    "await-promise": [true, "Bluebird"],
+    "no-floating-promises": [true, "Bluebird"]
   }
 }
