@@ -15,12 +15,12 @@ export function parseArgs(): IOptions {
   const rawOptions = commandLineArgs(optionDefinitions);
 
   invariant(
-    rawOptions["packages"] && rawOptions["packages"].length > 0,
+    rawOptions.packages && rawOptions.packages.length > 0,
     "You need to provide package name!"
   );
 
   return {
-    isDev: !!rawOptions["dev"],
-    packages: rawOptions["packages"],
+    isDev: !!rawOptions.dev,
+    packages: rawOptions.packages,
   };
 }

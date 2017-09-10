@@ -19,13 +19,21 @@
     "@types/lodash": "^4.14.74",
     "@types/node": "^8.0.26",
     "@types/ora": "^1.3.1",
+    "prettier": "^1.6.1",
     "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
+    "tslint-config-airbnb": "^5.2.1",
+    "tslint-config-prettier": "^1.5.0",
+    "tslint-language-service": "^0.9.6",
+    "tslint-plugin-prettier": "^1.1.0",
     "typescript": "^2.5.2"
   },
   "repository": "krzkaczor/tadd",
   "scripts": {
     "build": "rm -rf ./dist && tsc && chmod +x ./dist/cli.js",
-    "prepublish": "npm build"
+    "prepublish": "npm run lint && npm run build",
+    "lint": "tslint --type-check --project . 'src/*.ts'",
+    "lint:fix": "tslint --fix --type-check --project . 'src/*.ts'"
   },
   "bin": "./dist/cli.js"
 }

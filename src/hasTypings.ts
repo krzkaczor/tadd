@@ -1,5 +1,5 @@
+import { readFileSync } from "fs";
 import { join } from "path";
-import { readFileSync} from 'fs'
 
 export function hasTypings(name: string): boolean {
   const dir = join(process.cwd(), "node_modules", name);
