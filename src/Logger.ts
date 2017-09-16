@@ -1,5 +1,6 @@
 export interface ILogger {
   log(l: string): void;
+  dump(): string;
 }
 
 export class Logger implements ILogger {

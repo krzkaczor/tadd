@@ -19,6 +19,7 @@
     "object-literal-sort-keys": false,
     "no-unused-variable": [true, { "ignore-pattern": "^_$" }],
     "await-promise": [true, "Bluebird"],
-    "no-floating-promises": [true, "Bluebird"]
+    "no-floating-promises": [true, "Bluebird"],
+    "no-console": [false]
   }
 }

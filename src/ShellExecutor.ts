@@ -5,7 +5,7 @@ import { ILogger } from "./Logger";
 const promisedExec = Bluebird.promisify(exec);
 
 export class ShellExecutor implements IShellExecutor {
-  constructor(private logger: ILogger) {}
+  constructor(private readonly logger: ILogger) {}
 
   public async execute(cmd: string): Promise<void> {
     try {

@@ -1,26 +1,27 @@
 import * as commandLineArgs from "command-line-args";
-import * as invariant from "invariant";
 
-interface IOptions {
+interface ICliArgs {
   isDev: boolean;
   packages: string[];
+  version: boolean;
+  verbose: boolean;
 }
 
-export function parseArgs(): IOptions {
+export function parseArgs(): ICliArgs {
   const optionDefinitions = [
+    { name: "version", alias: "v", type: Boolean },
     { name: "dev", alias: "d", type: Boolean },
+    { name: "verbose", type: Boolean },
     { name: "packages", type: String, multiple: true, defaultOption: true },
   ];
 
   const rawOptions = commandLineArgs(optionDefinitions);
 
-  invariant(
-    rawOptions.packages && rawOptions.packages.length > 0,
-    "You need to provide package name!"
-  );
 
   return {
     isDev: !!rawOptions.dev,
-    packages: rawOptions.packages,
+    packages: rawOptions.packages || [],
+    version: !!rawOptions.version,
+    verbose: !!rawOptions.verbose,
   };
 }
