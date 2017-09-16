@@ -1,24 +1,29 @@
 export interface ILogger {
-  log(l: string): void;
-  dump(): string;
+  logInstalledPackage(l: string): void;
+  logCommand(l: string): void;
+  logCommandOutput(l: string): void;
 }
 
 export class Logger implements ILogger {
-  private logs: string[];
+  public cmdOutputLogs: string[];
+  public cmdLogs: string[];
+  public packagesInstalled: string[];
 
   constructor() {
-    this.logs = [];
+    this.cmdOutputLogs = [];
+    this.cmdLogs = [];
+    this.packagesInstalled = [];
   }
 
-  public log(l: string) {
-    this.logs.push(l);
+  public logInstalledPackage(pkg: string) {
+    this.packagesInstalled.push(pkg);
   }
 
-  public dump(): string {
-    const logDump = this.logs.join("\n"); // @todo support windows properly
+  public logCommand(cmd: string) {
+    this.cmdLogs.push(cmd);
+  }
 
-    this.logs = [];
-
-    return logDump;
+  public logCommandOutput(l: string) {
+    this.cmdOutputLogs.push(l);
   }
 }

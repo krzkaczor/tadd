@@ -9,8 +9,9 @@ export class ShellExecutor implements IShellExecutor {
 
   public async execute(cmd: string): Promise<void> {
     try {
+      this.logger.logCommand(cmd);
       const result = await promisedExec(cmd);
-      this.logger.log(result.toString());
+      this.logger.logCommandOutput(result.toString());
     } catch (e) {
       throw new Error(`Command ${cmd} failed with ${e.message}`);
     }

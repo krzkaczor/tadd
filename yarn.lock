@@ -36,6 +36,10 @@
   dependencies:
     "@types/node" "*"
 
+"@types/time-span@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/time-span/-/time-span-2.0.0.tgz#20435966e1877018fc89ee246b1ba4175071b03b"
+
 ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
@@ -146,6 +150,10 @@ commander@^2.9.0:
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
+
+convert-hrtime@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/convert-hrtime/-/convert-hrtime-2.0.0.tgz#19bfb2c9162f9e11c2f04c2c79de2b7e8095c627"
 
 diff@^3.1.0, diff@^3.2.0:
   version "3.3.1"
@@ -407,6 +415,12 @@ test-value@^2.1.0:
   dependencies:
     array-back "^1.0.3"
     typical "^2.6.0"
+
+time-span@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/time-span/-/time-span-2.0.0.tgz#e7624a37917a49729dbf3b7c47c5b799440e532f"
+  dependencies:
+    convert-hrtime "^2.0.0"
 
 ts-node@^3.3.0:
   version "3.3.0"

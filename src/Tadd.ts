@@ -1,9 +1,13 @@
 import { gray, green, red } from "chalk";
-import { negate } from "lodash";
+import { difference } from "lodash";
 import * as ora from "ora";
+import { EOL } from "os";
+import * as timeSpan from "time-span";
 
 import { hasTypings } from "./hasTypings";
-import { ILogger, Logger } from "./Logger";
+import { Logger } from "./Logger";
+import PackageReference from "./PackageReference";
+import { packageSemverString } from "./packageSemverString";
 import IPackageManagerController from "./pm/IPackageManagerController";
 import { packageManagerControllerFactory } from "./pm/packageManagerControllerFactory";
 import { ShellExecutor } from "./ShellExecutor";
@@ -16,7 +20,7 @@ interface ITaddConfig {
 
 export default class Tadd {
   public readonly packageManagerController: IPackageManagerController;
-  public readonly logger: ILogger;
+  public readonly logger: Logger;
 
   constructor(private readonly config: ITaddConfig) {
     this.logger = new Logger();
@@ -27,50 +31,56 @@ export default class Tadd {
     );
   }
 
-  public async add(isDev: boolean, packages: string[]) {
+  public async add(isDev: boolean, packages: PackageReference[]) {
+    const startTime = timeSpan();
     console.log(`Using: ${this.packageManagerController.formattedName()}`);
 
-    const packageInstallingBar = ora(`Installing packages: ${green(packages.join(","))}`).start();
+    const packageInstallingBar = ora(`Installing packages: ${green(packages.join(", "))}`).start();
 
     try {
-      await this.packageManagerController.add(isDev, packages);
+      await this.packageManagerController.add(isDev, packages.map(p => p.toString()));
     } catch (e) {
       packageInstallingBar.fail();
       this.finishFailure(e);
     }
     packageInstallingBar.succeed();
 
-    if (this.config.verbose) {
-      console.log(gray("Run commands:"));
-      console.log(this.logger.dump());
+    const packagesWithTypings = packages.filter(t => hasTypings(t.name));
+    if (packagesWithTypings.length > 0) {
+      console.log(gray(`Detected builtin typings: ${packagesWithTypings.join(", ")}`));
     }
 
-    const packagesWithTypings = packages.filter(hasTypings);
-    console.log(`Detected typings: ${packagesWithTypings}`);
-
-    const packagesWithoutTypings = packages.filter(negate(hasTypings));
+    const packagesWithoutTypings = difference(packages, packagesWithTypings);
     if (packagesWithoutTypings.length === 0) {
-      this.finishSuccess();
+      this.finishSuccess(startTime);
     }
 
-    const typingsInstallingBar = ora(
-      `Installing typings: ${packagesWithoutTypings.join(", ")}`
-    ).start();
-    const typingsPackages = packagesWithoutTypings.map(name => `@types/${name}`);
+    const typingsPackages = (await Promise.all(
+      packagesWithoutTypings.map(packageSemverString)
+    )).map(t => t.toTypingsPackage());
+
+    const typingsInstallingBar = ora(`Installing typings: ${typingsPackages.join(", ")}`).start();
     try {
-      await this.packageManagerController.add(true, typingsPackages);
+      await this.packageManagerController.add(true, typingsPackages.map(p => p.toString()));
     } catch (e) {
       typingsInstallingBar.fail();
       this.finishFailure(e);
     }
     typingsInstallingBar.succeed();
 
-    this.finishSuccess();
+    if (this.config.verbose) {
+      console.log(gray("Run commands:"));
+      console.log(this.logger.cmdOutputLogs.join(EOL));
+    }
+
+    this.finishSuccess(startTime);
   }
 
-  private finishSuccess() {
-    // tslint:disable-next-line
-    console.log(green("All good!"));
+  private finishSuccess(startTime: any) {
+    const duration = startTime();
+
+    console.log(gray(`Commands executed:${EOL}${this.logger.cmdLogs.join(EOL)}`));
+    console.log(green(`💎  All good! Took ${(duration / 1000).toFixed(2)}s.`));
     process.exit(0);
   }
 
