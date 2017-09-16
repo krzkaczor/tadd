@@ -28,12 +28,13 @@
     "tslint-plugin-prettier": "^1.1.0",
     "typescript": "^2.5.2"
   },
-  "repository": "krzkaczor/tadd",
+  "repository": "https://github.com/krzkaczor/tadd",
   "scripts": {
     "build": "rm -rf ./dist && tsc && chmod +x ./dist/cli.js",
     "prepublish": "npm run lint && npm run build",
     "lint": "tslint --type-check --project . 'src/*.ts'",
     "lint:fix": "tslint --fix --type-check --project . 'src/*.ts'"
   },
-  "bin": "./dist/cli.js"
+  "bin": "./dist/cli.js",
+  "author": "Krzysztof Kaczor <chris@kaczor.io>"
 }
