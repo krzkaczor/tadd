@@ -2,7 +2,7 @@
 
 Installs packages and automatically finds best Typescript typings
 
-[![tadd demo](https://media.giphy.com/media/l378gE3TwOAokleda/giphy.gif)]
+![tadd demo](https://media.giphy.com/media/l378gE3TwOAokleda/giphy.gif)
 
 ## Install
 ```
