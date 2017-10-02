@@ -1,5 +1,5 @@
 import { gray, green, red } from "chalk";
-import { difference } from "lodash";
+import { difference, zip } from "lodash";
 import * as ora from "ora";
 import { EOL } from "os";
 import * as timeSpan from "time-span";
@@ -7,7 +7,7 @@ import * as timeSpan from "time-span";
 import { hasTypings } from "./hasTypings";
 import { Logger } from "./Logger";
 import PackageReference from "./PackageReference";
-import { packageSemverString } from "./packageSemverString";
+import { isPackageInstalled, packageSemverString } from "./packageSemverString";
 import IPackageManagerController from "./pm/IPackageManagerController";
 import { packageManagerControllerFactory } from "./pm/packageManagerControllerFactory";
 import { ShellExecutor } from "./ShellExecutor";
@@ -21,6 +21,7 @@ interface ITaddConfig {
 export default class Tadd {
   public readonly packageManagerController: IPackageManagerController;
   public readonly logger: Logger;
+  private startTime: timeSpan.TimeSpanObject;
 
   constructor(private readonly config: ITaddConfig) {
     this.logger = new Logger();
@@ -32,7 +33,7 @@ export default class Tadd {
   }
 
   public async add(isDev: boolean, packages: PackageReference[]) {
-    const startTime = timeSpan();
+    this.startTime = timeSpan();
     console.log(`Using: ${this.packageManagerController.formattedName()}`);
 
     const packageInstallingBar = ora(`Installing packages: ${green(packages.join(", "))}`).start();
@@ -52,32 +53,54 @@ export default class Tadd {
 
     const packagesWithoutTypings = difference(packages, packagesWithTypings);
     if (packagesWithoutTypings.length === 0) {
-      this.finishSuccess(startTime);
+      this.finishSuccess();
     }
 
     const typingsPackages = (await Promise.all(
       packagesWithoutTypings.map(packageSemverString)
     )).map(t => t.toTypingsPackage());
-
     const typingsInstallingBar = ora(`Installing typings: ${typingsPackages.join(", ")}`).start();
     try {
       await this.packageManagerController.add(true, typingsPackages.map(p => p.toString()));
+      typingsInstallingBar.succeed();
+    } catch (e) {
+      typingsInstallingBar.fail();
+
+      await this.installAnyVersion(typingsPackages);
+      return;
+    }
+    this.finishSuccess();
+  }
+
+  private async installAnyVersion(packages: PackageReference[]) {
+    const checkPackageInstallationStatus = await Promise.all(packages.map(isPackageInstalled));
+    const notInstalledPackages: PackageReference[] = zip(
+      checkPackageInstallationStatus,
+      packages as any
+    )
+      .filter(x => !x[0])
+      .map(x => x[1]) as any;
+    console.log("Couldn't find exact typings for: ", notInstalledPackages.join(", "));
+    const anyVersionPackage = notInstalledPackages.map(ref => ref.toWithoutVersion());
+
+    const typingsInstallingBar = ora(`Installing typings for any version.`).start();
+    try {
+      await this.packageManagerController.add(true, anyVersionPackage.map(p => p.toString()));
+      typingsInstallingBar.succeed();
+      this.finishSuccess();
     } catch (e) {
       typingsInstallingBar.fail();
       this.finishFailure(e);
     }
-    typingsInstallingBar.succeed();
+  }
 
+  private finishSuccess() {
     if (this.config.verbose) {
-      console.log(gray("Run commands:"));
+      console.log(gray("Commands executed:"));
       console.log(this.logger.cmdOutputLogs.join(EOL));
     }
 
-    this.finishSuccess(startTime);
-  }
-
-  private finishSuccess(startTime: any) {
-    const duration = startTime();
+    const duration = this.startTime();
 
     console.log(gray(`Commands executed:${EOL}${this.logger.cmdLogs.join(EOL)}`));
     console.log(green(`💎  All good! Took ${(duration / 1000).toFixed(2)}s.`));

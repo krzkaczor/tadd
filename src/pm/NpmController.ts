@@ -7,7 +7,7 @@ export default class NpmController implements IPackageManagerController {
   constructor(public readonly executor: IShellExecutor) {}
 
   public async add(isDev: boolean, packages: string[]) {
-    const devPostfix = isDev ? "--dev" : "";
+    const devPostfix = isDev ? "--save-dev" : "";
 
     const installCommand = `npm install ${devPostfix} ${packages.join(" ")}`;
 

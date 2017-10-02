@@ -1,5 +1,6 @@
 import { promisify } from "bluebird";
 import { readFile } from "fs";
+import { get } from "lodash";
 import { join } from "path";
 import PackageReference from "./PackageReference";
 
@@ -18,4 +19,15 @@ export async function packageSemverString(packageRef: PackageReference) {
     packageInfo.dependencies[packageRef.name] || packageInfo.devDependencies[packageRef.name];
 
   return new PackageReference(packageRef.name, version);
+}
+
+export async function isPackageInstalled(packageRef: PackageReference): Promise<boolean> {
+  const packageInfo = JSON.parse(
+    (await readFileAsync(join(process.cwd(), "package.json"))).toString()
+  );
+
+  return !!(
+    get(packageInfo, `dependencies.${packageRef.name}`) ||
+    get(packageInfo, `devDependencies.${packageRef.name}`)
+  );
 }

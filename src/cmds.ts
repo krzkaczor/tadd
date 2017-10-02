@@ -11,5 +11,8 @@ export function printVersion() {
 
 export function printFail(e: Error) {
   console.log(red(e.message));
+  if (process.env.NODE_ENV === "development") {
+    console.log(e.stack);
+  }
   process.exit(1);
 }

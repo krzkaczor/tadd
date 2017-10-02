@@ -14,4 +14,8 @@ export default class PackageDefinition {
 
     return new PackageDefinition(`@types/${this.name}`, this.version);
   }
+
+  public toWithoutVersion(): PackageDefinition {
+    return new PackageDefinition(this.name);
+  }
 }
